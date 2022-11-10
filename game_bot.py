@@ -35,13 +35,9 @@ def play(update, context):
 
 def play_get_candy(update, contex):
     global candy
-    try:
-        candy = int(update.message.text)
-        update.message.reply_text("Сколько конфет вы возьмёте?")
-        return 2
-    except ValueError:
-        update.message.reply_text("Ошибка ввода! Введите число!")
-        return 2
+    candy = int(update.message.text)
+    update.message.reply_text("Сколько конфет вы возьмёте?")
+    return 2
     
 
 def player_1(update, context):
@@ -63,7 +59,7 @@ def player_1(update, context):
             return 2
         else:
             update.message.reply_text("Победил бот!", reply_markup = markup)
-            context.bot.send_photo(update.effective_chat.id, photo=open('loose.jpg', 'rb'))
+            context.bot.send_photo(update.effective_chat.id, photo=open('lose.jpg', 'rb'))
             return ConversationHandler.END
     except ValueError:
         update.message.reply_text("Ошибка ввода! Введите число!")
