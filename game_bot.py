@@ -86,8 +86,8 @@ def close(update, context):
     )
 
 def info(update, context):
-    update.message.reply_text(
-        "Правила игры:")
+    update.message.reply_text("Правила игры:\nВы играете против бота. По очереди каждый из вас  берёт какое-то количество конфет.\
+            \nПобеждает тот, у кого в конце игры останется  больше конфет.")
 
 play_handler = ConversationHandler(
         
