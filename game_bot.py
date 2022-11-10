@@ -1,4 +1,5 @@
 import logging
+import random
 
 from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove
 from telegram.ext import Updater, CommandHandler, ConversationHandler, MessageHandler, Filters
@@ -21,36 +22,53 @@ candy = 0
 
 def start(update, context):
     update.message.reply_text(
-        "Привет! Я игровой бот!",
+        "Привет! Я игровой бот! Сыграем в игру?",
         reply_markup=markup
     )
 
 def play(update, context):
-    update.message.reply_text("Введите количество конфет: ", reply_markup = stop_markup)
+    update.message.reply_text("Введите количество конфет, необходимое для игры: ", reply_markup = stop_markup)
     return 1
+
+
+
 
 def play_get_candy(update, contex):
     global candy
-    candy = int(update.message.text)
-    update.message.reply_text("Сколько конфет вы возьмёте?")
-    return 2
+    try:
+        candy = int(update.message.text)
+        update.message.reply_text("Сколько конфет вы возьмёте?")
+        return 2
+    except ValueError:
+        update.message.reply_text("Ошибка ввода! Введите число!")
+        return 2
+    
 
 def player_1(update, context):
     global candy
-    candy -= int(update.message.text)
-    update.message.reply_text(f"Осталось конфет: {candy}")
-    if candy > 28:
-        candy -= 5
-        update.message.reply_text(f"Бот взял {5} конфет. Осталось конфет: {candy}")
+    try:
+        candy -= int(update.message.text)
+        update.message.reply_text(f"Осталось конфет: {candy}")
         if candy > 28:
-            update.message.reply_text("Сколько конфет вы возьмёте?")
+            temp = random.randint(1, 28)
+            candy -= temp
+            update.message.reply_text(f"Бот взял {temp} конфет")
+            update.message.reply_text(f"Осталось конфет: {candy}")
+            if candy > 28:
+                update.message.reply_text("Сколько конфет вы возьмёте?")
+            else:
+                update.message.reply_text("Вы победили!", reply_markup = markup)
+                context.bot.send_photo(update.effective_chat.id, photo=open('win.jpeg', 'rb'))
+                return ConversationHandler.END
+            return 2
         else:
-            update.message.reply_text("Вы победили!", reply_markup = markup)
+            update.message.reply_text("Победил бот!", reply_markup = markup)
+            context.bot.send_photo(update.effective_chat.id, photo=open('loose.jpg', 'rb'))
             return ConversationHandler.END
+    except ValueError:
+        update.message.reply_text("Ошибка ввода! Введите число!")
         return 2
-    else:
-        update.message.reply_text("Победил бот!", reply_markup = markup)
-        return ConversationHandler.END
+
 
 
 
